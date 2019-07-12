@@ -41,16 +41,22 @@ public class UserController {
     }*/
 
     @RequestMapping(value = "login",method = RequestMethod.POST)
-    public String login(String name, String password, Model model, HttpSession session){
-
-        Users user = usersService.login(name, password);
-        if (user==null){
-            model.addAttribute("info","用户名或者密码错误");
+    public String login(String veryCode,String name, String password, Model model, HttpSession session){
+        String saveCode =(String)session.getAttribute("saveCode");
+        if (veryCode.equals(saveCode)){
+            Users user = usersService.login(name, password);
+            if (user==null){
+                model.addAttribute("info","用户名或者密码错误");
+                return "login";
+            }else {
+                session.setAttribute("loginInfo",user);
+                session.setMaxInactiveInterval(12000);
+                return "redirect:getHouses";
+            }
+        }else{
+            model.addAttribute("info","验证码错误或登录超时");
             return "login";
-        }else {
-            session.setAttribute("loginInfo",user);
-            session.setMaxInactiveInterval(120);
-            return "redirect:getHouses";
         }
+
     }
 }

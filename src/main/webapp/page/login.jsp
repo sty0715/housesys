@@ -4,6 +4,34 @@
 <META content="text/html; charset=utf-8" http-equiv=Content-Type><LINK 
 rel=stylesheet type=text/css href="../css/style.css">
 <META name=GENERATOR content="MSHTML 8.00.7601.17514"></HEAD>
+<script language="JavaScript" src="../admin/js/jquery-1.8.3.js"></script>
+<script language="JavaScript">
+  var objTime;
+  $(function () {
+     $("#sendButton").click(function () {
+         $.post("getCode",{"sendPhone":$("#inputPhone").val()},function (data) {
+             if (data.result>0){
+               objTime=setInterval("backTime()",1000);
+             }else {
+                 alert("失败");
+             }
+         },"json");
+     });
+  });
+  var time=120;
+  function backTime(){
+      if(time!=0){
+          time--;
+          $("#sendButton")[0].disabled=true;
+          $("#sendButton").css("padding","5px 10px");
+          $("#sendButton").val(time+"秒");
+      }else{
+          clearInterval(objTime);  //清除定时
+          $("#sendButton")[0].disabled=false;
+          $("#sendButton").val("获取验证码");
+      }
+  }
+</script>
 <BODY>
 <DIV id=header class=wrap>
 <DIV id=logo><IMG src="../images/logo.gif"></DIV></DIV>
@@ -23,13 +51,16 @@ rel=stylesheet type=text/css href="../css/style.css">
       id=user_name class=text type=text name=name> </TD></TR>
   <TR>
     <TD class=field>密　　码：</TD>
-    <TD><!-- <input type="password" class="text" name="password" /> --><INPUT 
-      id=user_password class=text type=password name=password> </TD></TR><!--
-						<tr>
-							<td class="field">验 证 码：</td>
-							<td><input type="text" class="text verycode" name="veryCode" /></td>
-						</tr>
-						--></TBODY></TABLE>
+    <TD><INPUT id=user_password class=text type=password name=password> </TD></TR>
+  <tr>
+    <td class="field">手机号:</td>
+    <td><input type="text" class="text verycode" id="inputPhone"/><input type="button" id="sendButton" value="获取验证码"></td>
+  </tr>
+  <tr>
+    <td class="field">验 证 码：</td>
+    <td><input type="text" class="text verycode" name="veryCode"  /></td>
+  </tr>
+  </TBODY></TABLE>
 <DIV class=buttons> <INPUT  value=登陆 type=submit> <INPUT onclick='document.location="regs.jsp"' value=注册 type=button>
 </DIV></DIV></FORM></DIV></DIV></DIV>
 <DIV id=footer class=wrap>
